@@ -1,8 +1,14 @@
 from pymongo import MongoClient
-def get_database(db_name):
+from constant import USERNAME, PASSWORD
+
+'''
+Remember to create your own constant.py file and include your own MongoDB username and password.
+'''
+
+def get_database(db_name: str):
 
    # Provide the mongodb atlas url to connect python to mongodb using pymongo
-   CONNECTION_STRING = "mongodb+srv://<username>:<password>@hazard.do2ugno.mongodb.net/?retryWrites=true&w=majority"
+   CONNECTION_STRING = f"mongodb+srv://{USERNAME}:{PASSWORD}@hazard.do2ugno.mongodb.net/?retryWrites=true&w=majority"
  
    # Create a connection using MongoClient. You can import MongoClient or use pymongo.MongoClient
    client = MongoClient(CONNECTION_STRING)
