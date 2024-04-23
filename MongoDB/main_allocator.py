@@ -10,7 +10,8 @@ def execute_hurricane_harvey(input_file_name: str):
     db = get_database("hazards")
     hurricane_building_effect_pair = []
     for i in range(rows):
-        print("\033[91mColumn is\033[0m" + str(i))
+        # Print meant purely for logging purposes.
+        print("\033[91mColumn is\033[0m " + str(i))
         row = pd.Series(data.iloc[i]).to_dict()
         hazard_effect_document, building_specific_document = parse_hurricane_michael(
             row)
