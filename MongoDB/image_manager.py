@@ -1,6 +1,5 @@
 from get_database import get_database
 from gridfs import GridFS
-from insert import insert_to_collection
 from PIL import Image
 import io
 
