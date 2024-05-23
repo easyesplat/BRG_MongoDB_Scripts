@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from bson import ObjectId
 from get_database import get_database
+from image_manager import print_image
 
 # Function to retrieve one document's content(s)
 def retrieve_one_document(object_id_str, collection_name, specific_field="all"):
@@ -13,7 +14,16 @@ def retrieve_one_document(object_id_str, collection_name, specific_field="all"):
     else:
         print(document[specific_field])
 
+def retrieve_one_document(collection_name):
+    db = get_database("hazards")
+    collection = db[collection_name]
+    document = collection.aggregate([{'$sample': {'size': 1}}]).next()
+    return document
+
+def print_one_image():
+    document = retrieve_one_document("hazard_effect")
+    image_ids = document["photo"]
+    print_image(image_ids[0])
   
 if __name__ == "__main__":   
-    # Get the database
-    retrieve_one_document('661c255aa92a28ccbb3a2458', "buildings")
+    print_one_image()

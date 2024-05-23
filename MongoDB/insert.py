@@ -1,7 +1,7 @@
 # Get the database using the method we defined in pymongo_test_insert file
 from get_database import get_database
 
-def process_hurricane_harvey(building_specific_map: dict, hazard_effect_map: dict, db) -> None:
+def process_hurricane_harvey(hazard_effect_map: dict, building_specific_map: dict, db) -> None:
     building_specific_doc_id = insert_to_collection("buildings", building_specific_map, db)
     hazard_effect_doc_id = insert_to_collection("hazard_effect", hazard_effect_map, db)
     return hazard_effect_doc_id, building_specific_doc_id

@@ -9,8 +9,16 @@ fs = GridFS(db)
 
 def upload_image(steer_photo_id):
     # Read the image file
-    with open('/Users/eric/brq_mongodb/BRG_MongoDB_Scripts/MongoDB/image_sample/dog.png', 'rb') as f:
-        image_data = f.read()
+    try:
+        with open('/Volumes/LaCie/STEER/Photos/' + steer_photo_id + '.jpg', 'rb') as f:
+            image_data = f.read()
+    except:
+        print("\033[91mCouldn't read .jpg\033[0m")
+        try:
+            with open('/Volumes/LaCie/STEER/Photos/' + steer_photo_id + '.png', 'rb') as f:
+                image_data = f.read()
+        except:
+            print("\033[91mCouldn't read .png\033[0m")
 
     # Store the image in MongoDB
     image_id = fs.put(image_data, filename=steer_photo_id)
@@ -18,7 +26,7 @@ def upload_image(steer_photo_id):
     print(f"Image uploaded with id: {image_id}")
     return image_id
 
-def retrieve_image(image_id):
+def print_image(image_id):
     # Retrieving the image
     out = fs.get(image_id)
     image = Image.open(io.BytesIO(out.read()))
@@ -27,4 +35,4 @@ def retrieve_image(image_id):
 
 if __name__ == "__main__":
     image_id = upload_image("test")
-    retrieve_image(image_id)
+    print_image(image_id)

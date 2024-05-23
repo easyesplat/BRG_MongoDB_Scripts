@@ -2,13 +2,14 @@ import pandas as pd
 import math
 import re
 from insert import process_hurricane_harvey
+from image_manager import upload_image
 
 def parse_hurricane_michael(row):
     hazard_effect_document = {
         "damage_state": row["status"],
         "date": row["date"],
         "assessment_type": row["assessment_type"],
-        "photo": row["all_photos"],
+        "photo": process_photos(row["all_photos"]),
         "photo_caption": row["all_photos_caption"],
         "surveyor_notes": collect_notes([row["general_notes"], row["overall_damage_notes"],
                                         row["structural_notes"], row["wind_damage_details"],
@@ -113,3 +114,11 @@ def collect_notes(arr):
         if not isinstance(elem, str) and math.isnan(elem): continue
         ret_str += elem
     return math.nan if len(ret_str) == 0 else ret_str
+
+def process_photos(photo_str):
+    if not isinstance(photo_str, str) and math.isnan(photo_str): return photo_str
+    image_ids = []
+    photo_ids = photo_str.split(',')
+    for photo_id in photo_ids:
+        image_ids.append(upload_image(photo_id))
+    return image_ids
