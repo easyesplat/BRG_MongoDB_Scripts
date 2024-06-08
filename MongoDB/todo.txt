@@ -1,0 +1,5 @@
+1. Add testing option (No inserts)
+2. Add threads for concurrency
+3. Create constants for file names
+4. Include metadata for unit
+5. Create easier retrieval mechanism

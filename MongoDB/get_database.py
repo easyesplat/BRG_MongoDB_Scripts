@@ -9,8 +9,8 @@ Remember to create your own constant.py file and include your own MongoDB userna
 def get_database(db_name: str):
 
     # Provide the mongodb atlas url to connect python to mongodb using pymongo
-    # CONNECTION_STRING = f"mongodb+srv://{USERNAME}:{PASSWORD}@serverlessinstance0.6essvcc.mongodb.net/?retryWrites=true&w=majority&appName=ServerlessInstance0"
-    CONNECTION_STRING = f"mongodb+srv://{USERNAME}:{PASSWORD}@hazard.do2ugno.mongodb.net/?retryWrites=true&w=majority&appName=Hazard"
+    CONNECTION_STRING = f"mongodb+srv://{USERNAME}:{PASSWORD}@serverlessinstance0.6essvcc.mongodb.net/?retryWrites=true&w=majority&appName=ServerlessInstance0"
+    # CONNECTION_STRING = f"mongodb+srv://{USERNAME}:{PASSWORD}@hazard.do2ugno.mongodb.net/?retryWrites=true&w=majority&appName=Hazard"
 
     # Create a connection using MongoClient. You can import MongoClient or use pymongo.MongoClient
     client = MongoClient(CONNECTION_STRING)
@@ -21,5 +21,5 @@ def get_database(db_name: str):
 if __name__ == "__main__":
 
     # Get the database
-    dbname = get_database("Hazards")
+    dbname = get_database("MultiHazardDatabase")
     print(dbname)

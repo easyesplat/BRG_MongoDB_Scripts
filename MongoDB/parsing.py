@@ -39,7 +39,7 @@ def parse_hurricane_michael(row):
         ),
         "soffit_damage": row["soffit_damage"],
         "fascia_damage": row["fascia_damage_"],
-        "stories_with_damage": convert_to_int(row["stories_with_damage"]),
+        "stories_with_damage": parse_stories_with_damage(row["stories_with_damage"]),
         "piles_missing_or_collapsed": row["_piles_missing_or_collapsed"],
         "piles_leaning_or_broken": row["_piles_leaning_or_broken"],
         "cause_of_foundation_damage": row["cause_of_foundation_damage"],
@@ -67,8 +67,8 @@ def parse_hurricane_michael(row):
         "foundation_type": row["foundation_type"],
         "wall_anchorage_type": row["wall_anchorage_type"],
         "wall_structure": row["wall_structure"],
-        "wall_substrate": row["wall_substrate"],
-        "wall_cladding": row["wall_cladding"],
+        "wall_substrate": split_to_array(row["wall_substrate"]),
+        "wall_cladding": split_to_array_comma(row["wall_cladding"]),
         "soffit_type": row["soffit_type"],
         "wall_fenestration_ratio": compute_average_value(
             row["front_wall_fenestration_ratio"],
@@ -126,7 +126,7 @@ def parse_hurricane_laura(row):
         "wall_fenestration_damage": math.nan,
         "soffit_damage": row["soffit_damage"],
         "fascia_damage": row["fascia_damage_"],
-        "stories_with_damage": convert_to_int(row["stories_with_damage"]),
+        "stories_with_damage": parse_stories_with_damage(row["stories_with_damage"]),
         "piles_missing_or_collapsed": row["_piles_missing_or_collapsed"],
         "piles_leaning_or_broken": row["_piles_leaning_or_broken"],
         "cause_of_foundation_damage": row["cause_of_foundation_damage"],
@@ -154,8 +154,8 @@ def parse_hurricane_laura(row):
         "foundation_type": row["foundation_type"],
         "wall_anchorage_type": row["wall_anchorage_type"],
         "wall_structure": math.nan,
-        "wall_substrate": row["wall_substrate"],
-        "wall_cladding": row["wall_cladding"],
+        "wall_substrate": split_to_array(row["wall_substrate"]),
+        "wall_cladding": split_to_array_comma(row["wall_cladding"]),
         "soffit_type": row["soffit_type"],
         "wall_fenestration_ratio": math.nan,
         "large_door_present": True if row["large_door_present"] == "yes" else False,
@@ -168,70 +168,66 @@ def parse_hurricane_laura(row):
     return hazard_effect_document, building_specific_document
 
 
-# def parse_hurricane_harvey(row):
-#     hazard_effect_document = {
-#         "damage_state": row["status"],
-#         "date": row["date"],
-#         "assessment_type": math.nan,
-#         "sampling_method": math.nan,
-#         "photos": process_photos(
-#             row["photos"], "Hurricane_Harvey_Photos"
-#         ),
-#         "photos_caption": row["photos_caption"],
-#         "surveyor_notes": collect_notes([row["notes"]]),
-#         "hazards_present": math.nan,
-#         "wind_damage_rating": math.nan,
-#         "surge_damage_rating": math.nan,
-#         "rainwater_ingress_damage_rating": math.nan,
-#         "roof_structure_damage": row["roof_structure_damage_"],
-#         "roof_substrate_damage": row["roof_substrate_damage"],
-#         "roof_cover_damage": row["roof_cover_damage_"],
-#         "wall_structure_damage": row["wall_structure_damage_"],
-#         "wall_substrate_damage": row["wall_substrate_damage_"],
-#         "building_envelope_damage": row["building_envelope_damage_"],
-#         "wall_fenestration_damage": math.nan,
-#         "soffit_damage": row["soffit_damage"],
-#         "fascia_damage": row["fascia_damage_"],
-#         "stories_with_damage": convert_to_int(row["stories_with_damage"]),
-#         "piles_missing_or_collapsed": row["_piles_missing_or_collapsed"],
-#         "piles_leaning_or_broken": row["_piles_leaning_or_broken"],
-#         "cause_of_foundation_damage": row["cause_of_foundation_damage"],
-#         "damaged_windows_percentage": row["_damaged_windows"],
-#         "damaged_doors_percentage": row["_damaged_doors"],
-#     }
-#     building_specific_document = {
-#         "latitude": row["latitude"],
-#         "longitude": row["longitude"],
-#         "building_address": row["street_address_full"],
-#         "building_type": row["building_use"], row["building_"],
-#         "number_of_stories": row["number_of_stories"],
-#         "understory_pct_of_building_footprint": row[
-#             "understory_pct_of_building_footprint"
-#         ],
-#         "elevation_height": row["first_floor_elevation_feet"],
-#         "year_built": convert_to_int(row["year_built"]),
-#         "roof_shape": row["roof_shape"],
-#         "roof_system": split_to_array(row["roof_system"]),
-#         "roof_to_wall_attachment": row["r2wall_attachment"],
-#         "roof_substrate_type": row["roof_substrate_type"],
-#         "roof_cover": split_to_array(row["roof_cover"]),
-#         "roof_slope": row["roof_slope"],
-#         "main_wind_force_resisting_system": math.nan,
-#         "foundation_type": row["foundation_type"],
-#         "wall_anchorage_type": row["wall_anchorage_type"],
-#         "wall_structure": math.nan,
-#         "wall_substrate": row["wall_substrate"],
-#         "wall_cladding": row["wall_cladding"],
-#         "soffit_type": row["soffit_type"],
-#         "wall_fenestration_ratio": math.nan,
-#         "large_door_present": True if row["large_door_present"] == "yes" else False,
-#         "large_door_opening_type": row["large_door_opening_type_"],
-#         "secondary_water_barrier": row["secondary_water_barrier"],
-#         "overhang_length": row["overhang_length"],
-#         "parapet_height": row["parapet_height_inches"],
-#         "reroof_year": row["reroof_year"],
-#     }
-#     return hazard_effect_document, building_specific_document
+def parse_hurricane_harvey(row):
+    hazard_effect_document = {
+        "damage_state": int(row["total_damage_rating"][0]),
+        "date": row["date_of_survey"],
+        "assessment_type": math.nan,
+        "sampling_method": math.nan,
+        "photos": process_photos(row["photos"], "Hurricane_Harvey_Photos"),
+        "photos_caption": row["photos_caption"],
+        "surveyor_notes": collect_notes([row["notes"]]),
+        "hazards_present": math.nan,
+        "wind_damage_rating": math.nan,
+        "surge_damage_rating": math.nan,
+        "rainwater_ingress_damage_rating": math.nan,
+        "roof_structure_damage": row["roof_structure_damage_"],
+        "roof_substrate_damage": row["roof_substrate_damage"],
+        "roof_cover_damage": row["roof_cover_damage_"],
+        "wall_structure_damage": row["wall_structure_damage_"],
+        "wall_substrate_damage": row["wall_substrate_damage_"],
+        "building_envelope_damage": math.nan,
+        "wall_fenestration_damage": math.nan,
+        "soffit_damage": math.nan,
+        "fascia_damage": math.nan,
+        "stories_with_damage": math.nan,
+        "piles_missing_or_collapsed": math.nan,
+        "piles_leaning_or_broken": math.nan,
+        "cause_of_foundation_damage": row["cause_of_foundation_damage"],
+        "damaged_windows_percentage": row["_damaged_windows"],
+        "damaged_doors_percentage": math.nan,
+    }
+    building_specific_document = {
+        "latitude": row["latitude"],
+        "longitude": row["longitude"],
+        "building_address": row["address_full"],
+        "building_type": row["building_type"],
+        "number_of_stories": row["number_of_stories"],
+        "understory_pct_of_building_footprint": math.nan,
+        "elevation_height": row["first_floor_elevation_feet"],
+        "year_built": convert_to_int(row["year_built"]),
+        "roof_shape": row["roof_shape"],
+        "roof_system": split_to_array(row["roof_system"]),
+        "roof_to_wall_attachment": math.nan,
+        "roof_substrate_type": math.nan,
+        "roof_cover": split_to_array(row["roof_cover"]),
+        "roof_slope": math.nan,
+        "main_wind_force_resisting_system": math.nan,
+        "foundation_type": math.nan,
+        "wall_anchorage_type": math.nan,
+        "wall_structure": row["wall_structure"],
+        "wall_substrate": math.nan,
+        "wall_cladding": split_to_array_comma(row["wall_cladding"]),
+        "soffit_type": math.nan,
+        "wall_fenestration_ratio": math.nan,
+        "large_door_present": math.nan,
+        "large_door_opening_type": math.nan,
+        "secondary_water_barrier": math.nan,
+        "overhang_length": math.nan,
+        "parapet_height": math.nan,
+        "reroof_year": math.nan,
+    }
+    return hazard_effect_document, building_specific_document
 
 
 def parse_hurricane_dorian(row):
@@ -240,8 +236,7 @@ def parse_hurricane_dorian(row):
         "date": row["date"],
         "assessment_type": row["assessment_type"],
         "sampling_method": math.nan,
-        # "photos": process_photos(row["all_photos"], "Hurricane_Dorian_Photos"),
-        "photos": row["all_photos"],
+        "photos": process_photos(row["all_photos"], "Hurricane_Dorian_Photos"),
         "photos_caption": math.nan,
         "surveyor_notes": collect_notes(
             [
@@ -270,7 +265,7 @@ def parse_hurricane_dorian(row):
         ),
         "soffit_damage": row["soffit_damage"],
         "fascia_damage": row["fascia_damage_"],
-        "stories_with_damage": math.nan,
+        "stories_with_damage": parse_stories_with_damage(row["stories_with_damage"]),
         "piles_missing_or_collapsed": row["_piles_missing_or_collapsed"],
         "piles_leaning_or_broken": row["_piles_leaning_or_broken"],
         "cause_of_foundation_damage": row["cause_of_foundation_damage"],
@@ -280,7 +275,16 @@ def parse_hurricane_dorian(row):
     building_specific_document = {
         "latitude": row["latitude"],
         "longitude": row["longitude"],
-        "building_address": math.nan,
+        "building_address": process_missing_address(
+            row["address_sub_thoroughfare"],
+            row["address_thoroughfare"],
+            row["address_suite"],
+            row["address_locality"],
+            row["address_sub_admin_area"],
+            row["address_admin_area"],
+            row["address_postal_code"],
+            row["address_country"],
+        ),
         "building_type": row["building_type"],
         "number_of_stories": row["number_of_stories"],
         "understory_pct_of_building_footprint": row[
@@ -298,8 +302,8 @@ def parse_hurricane_dorian(row):
         "foundation_type": row["foundation_type"],
         "wall_anchorage_type": row["wall_anchorage_type"],
         "wall_structure": row["wall_structure"],
-        "wall_substrate": row["wall_substrate"],
-        "wall_cladding": row["wall_cladding"],
+        "wall_substrate": split_to_array(row["wall_substrate"]),
+        "wall_cladding": split_to_array_comma(row["wall_cladding"]),
         "soffit_type": row["soffit_type"],
         "wall_fenestration_ratio": compute_average_value(
             row["front_wall_fenestration_ratio"],
@@ -321,6 +325,7 @@ def parse_hurricane_dorian(row):
         "parapet_height": row["parapet_height_inches"],
         "reroof_year": row["reroof_year"],
     }
+    print(hazard_effect_document["surveyor_notes"])
     return hazard_effect_document, building_specific_document
 
 
@@ -374,12 +379,31 @@ def split_to_array_comma(elem):
     return elem.split(",")
 
 
+def parse_stories_with_damage(elem):
+    if isinstance(elem, str):
+        try:
+            split_arr = split_to_array_comma(elem)
+            ret_arr = [int(x) for x in split_arr]
+            return ret_arr
+        except:
+            try:
+                split_arr = elem.split(" and ")
+                ret_arr = [int(x) for x in split_arr]
+                return ret_arr
+            except:
+                return []
+    if math.isnan(elem):
+        return []
+    if isinstance(elem, int):
+        return [elem]
+
+
 def collect_notes(arr):
     ret_str = ""
     for elem in arr:
         if not isinstance(elem, str) and math.isnan(elem):
             continue
-        ret_str += elem
+        ret_str += str(elem)
     return math.nan if len(ret_str) == 0 else ret_str
 
 
@@ -393,3 +417,33 @@ def process_photos(photo_str, photo_path):
         if image_id:
             image_ids.append(image_id)
     return image_ids
+
+
+def process_missing_address(
+    address_sub_thoroughfare,
+    address_thoroughfare,
+    address_suite,
+    address_locality,
+    address_sub_admin_area,
+    address_admin_area,
+    address_postal_code,
+    address_country,
+):
+    full_address = ""
+    if isinstance(address_sub_thoroughfare, str):
+        full_address += address_sub_thoroughfare
+    if isinstance(address_thoroughfare, str):
+        full_address += address_thoroughfare
+    if isinstance(address_suite, str):
+        full_address += address_suite
+    if isinstance(address_locality, str):
+        full_address += address_locality
+    if isinstance(address_sub_admin_area, str):
+        full_address += address_sub_thoroughfare
+    if isinstance(address_admin_area, str):
+        full_address += address_admin_area
+    if isinstance(address_postal_code, str):
+        full_address += address_postal_code
+    if isinstance(address_country, str):
+        full_address += address_country
+    return full_address

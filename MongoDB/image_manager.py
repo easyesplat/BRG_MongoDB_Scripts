@@ -4,7 +4,7 @@ from PIL import Image
 import io
 
 # Global variables
-db = get_database("Hazard")
+db = get_database("MultiHazardDatabase")
 fs = GridFS(db)
 
 
@@ -25,6 +25,7 @@ def upload_image(steer_photo_id, photo_path):
                 image_data = f.read()
         except:
             print("\033[91mCouldn't read .png\033[0m")
+            print("\033[91mImage id is %s\033[0m", str(steer_photo_id))
             return None
 
     # Store the image in MongoDB
@@ -43,5 +44,5 @@ def print_image(image_id):
 
 
 if __name__ == "__main__":
-    image_id = upload_image("test")
+    # image_id = upload_image("test")
     print_image(image_id)

@@ -5,7 +5,7 @@ def process_hazard_pairs(
     building_specific_doc_id = insert_to_collection(
         "Buildings", building_specific_map, db
     )
-    hazard_effect_doc_id = insert_to_collection("Hazard_Effect", hazard_effect_map, db)
+    hazard_effect_doc_id = insert_to_collection("HazardEffects", hazard_effect_map, db)
     return hazard_effect_doc_id, building_specific_doc_id
 
 
