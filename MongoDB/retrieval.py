@@ -36,11 +36,18 @@ def print_one_image():
 def query_db(collection_name):
     db = get_database("MultiHazardDatabase")
     collection = db[collection_name]
-    query = {"damage_state": {"$gt": 3}}
+    # query = {"damage_state": {"$gt": 3}}
+    query = {
+    "photos": {
+        "$exists": True,
+        "$ne": []
+    }
+}
     documents = collection.find(query)
     # print_image(documents[2]["photos"][0])
-    for document in documents:
-        print(document["roof_cover_damage"])
+    print(collection.count_documents(query))
+    # for document in documents:
+    #     print(document["roof_cover_damage"])
 
 
 if __name__ == "__main__":

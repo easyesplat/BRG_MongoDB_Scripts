@@ -8,7 +8,7 @@ db = get_database("MultiHazardDatabase")
 fs = GridFS(db)
 
 
-def upload_image(steer_photo_id, photo_path):
+def upload_image(steer_photo_id, photo_path, read_privilege):
     # Read the image file
     try:
         with open(
@@ -29,7 +29,9 @@ def upload_image(steer_photo_id, photo_path):
             return None
 
     # Store the image in MongoDB
-    image_id = fs.put(image_data, filename=steer_photo_id)
+    image_id = 0
+    if read_privilege:
+        image_id = fs.put(image_data, filename=steer_photo_id)
 
     print(f"Image uploaded with id: {image_id}")
     return image_id
