@@ -170,9 +170,9 @@ class DatabaseExecutor:
 
 
 if __name__ == "__main__":
-    database_executor = DatabaseExecutor(True)
-    database_executor.execute_hurricane_michael()
-    database_executor.execute_hurricane_dorian()
-    database_executor.execute_hurricane_harvey()
-    database_executor.execute_hurricane_laura()
-    database_executor.execute_earthquake_napa()
+    database_executor = DatabaseExecutor(write_privilege=False)
+    # database_executor.execute_hurricane_michael()
+    # database_executor.execute_hurricane_dorian()
+    # database_executor.execute_hurricane_harvey()
+    # database_executor.execute_hurricane_laura()
+    # database_executor.execute_earthquake_napa()
